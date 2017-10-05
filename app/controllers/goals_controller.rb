@@ -16,8 +16,9 @@ class GoalsController < ApplicationController
   # POST /goals
   def create
     @goal = Goal.new(goal_params)
-
     if @goal.save
+      #puts "I AM CURL SYS CALL" + system("curl http://localhost:9292/faye -d message={'channel':'/messages/new', 'data':'hello'}'").to_s
+      `curl http://localhost:9292/faye -d 'message={"channel":"/messages/new", "data":"hello"}'`
       render json: @goal, status: :created, location: @goal
     else
       render json: @goal.errors, status: :unprocessable_entity
