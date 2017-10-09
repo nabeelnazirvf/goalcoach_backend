@@ -11,10 +11,28 @@ class UsersController < ApplicationController
     end
   end
 
+  def update
+    @user = User.find_by_email params[:email]
+    if @user and @user.update(user_params)
+      render json: @user
+    else
+      render json: 'SOMETHING WENT WRONG!', status: :unprocessable_entity
+    end
+  end
+
+  def show
+    @user = User.find_by_email(params[:email])
+    if @user
+      render json: @user
+    else
+      render json: 'SOMETHING WENT WRONG!', status: :unprocessable_entity
+    end
+  end
+
   private
   # Only allow a trusted parameter "white list" through.
   def user_params
-    params.require(:user).permit(:name, :email, :password, :password_confirmation)
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :image_base)
   end
 
 
