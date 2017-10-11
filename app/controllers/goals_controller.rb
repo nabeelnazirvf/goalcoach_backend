@@ -3,8 +3,7 @@ class GoalsController < ApplicationController
 
   # GET /goals
   def index
-    @goals = Goal.all
-
+    @goals = Goal.order(created_at: :desc)
     render json: @goals
   end
 
@@ -21,7 +20,7 @@ class GoalsController < ApplicationController
       #`curl http://localhost:9292/faye -d 'message={"channel":"/messages/new", "data":#{JSON.parse @goal}"}'`
       hash = []
       hash.push(@goal.title,@goal.email, @goal.id )
-      `curl http://localhost:9292/faye -d 'message={"channel":"/messages/new", "data":"#{@goal.title.to_s+','+@goal.email.to_s+','+@goal.id.to_s}"}'`
+      `curl http://localhost:9292/faye -d 'message={"channel":"/messages/new", "data":"#{@goal.title.to_s+','+@goal.email.to_s+','+@goal.id.to_s+','+@goal.created_at.to_s}"}'`
       render json: @goal, status: :created, location: @goal
     else
       render json: @goal.errors, status: :unprocessable_entity
