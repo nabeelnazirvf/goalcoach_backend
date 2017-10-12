@@ -49,6 +49,14 @@ class GoalsController < ApplicationController
     end
   end
 
+  def goals_notifications
+    goals_notifications = []
+    Goal.includes(:user).order(created_at: :desc).each do |g|
+      goals_notifications.push({user_name: g.user.name, image_base: g.user.image_base, title: g.title, created_at: g.created_at})
+    end
+    render json: goals_notifications
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_goal
