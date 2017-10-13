@@ -22,7 +22,6 @@ class GoalsController < ApplicationController
     user = User.find_by_id(params[:user_id])
     @goal = user.goals.new(goal_params)
     if user && @goal.save
-      `curl http://localhost:9292/faye -d 'message={"channel":"/messages/new", "data":"#{@goal.title.to_s+','+@goal.email.to_s+','+@goal.id.to_s+','+@goal.created_at.to_s+','+@goal.user_id.to_s}"}'`
       render json: @goal, status: :created, location: @goal
     else
       render json: @goal.errors, status: :unprocessable_entity
