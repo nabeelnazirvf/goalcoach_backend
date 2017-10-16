@@ -39,7 +39,7 @@ class GoalService
   end
 
   def goals
-    return user.goals if user
+    return user.goals.order(created_at: :desc) if user
     errors.add :user, 'User Not Found!'
     nil
   end
