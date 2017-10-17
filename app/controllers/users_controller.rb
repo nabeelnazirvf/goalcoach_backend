@@ -23,9 +23,20 @@ class UsersController < ApplicationController
   def show
     @user = User.find_by_email(params[:email])
     if @user
-      render json: @user
+      render json: @user, include: ['user']#, serializer: Users::ShowSerializer
     else
       render json: 'SOMETHING WENT WRONG!', status: :unprocessable_entity
+    end
+  end
+
+  def user_activity
+    user = User.find_by_id(params[:id])
+    #user_activity = User.where(id: user.id).includes(:goals, :comments).order(created_at: :desc).to_a
+    goals = Goal.includes(:user, :comments)
+    if user
+      render json: user, include: ['user', 'goals', 'goals.comments']#, serializer: Users::ShowSerializer
+    else
+      render json: 'SOMETHING WENT WRONG IN FETCHING USER ACTIVITY!', status: :unprocessable_entity
     end
   end
 
