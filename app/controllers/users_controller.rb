@@ -33,8 +33,10 @@ class UsersController < ApplicationController
     user = User.find_by_id(params[:id])
     #user_activity = User.where(id: user.id).includes(:goals, :comments).order(created_at: :desc).to_a
     goals = Goal.includes(:user, :comments)
+    # from_time = Time.now
+    # render json: {user: user, date: ActionView::Base.new.distance_of_time_in_words(from_time, Goal.last.created_at.to_time + (1440*100).minutes)}
     if user
-      render json: user, include: ['user', 'goals', 'goals.comments']#, serializer: Users::ShowSerializer
+      render json: user, root: "user", include: ['user', 'goals', 'goals.comments']#, serializer: Users::ShowSerializer
     else
       render json: 'SOMETHING WENT WRONG IN FETCHING USER ACTIVITY!', status: :unprocessable_entity
     end

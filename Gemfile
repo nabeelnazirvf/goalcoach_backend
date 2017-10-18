@@ -18,7 +18,7 @@ gem 'bcrypt'
 gem 'rack-cors'
 gem 'faye'
 gem 'thin'
-gem 'active_model_serializers'
+gem 'active_model_serializers', '~> 0.10.0'
 gem 'faker'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.5'

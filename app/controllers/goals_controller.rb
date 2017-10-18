@@ -6,7 +6,7 @@ class GoalsController < ApplicationController
     @goal_service = GoalService.new(params[:user_id], params[:goal_id], 'index', nil)
     command = @goal_service.call
     if command.success?
-      render json: command.result.to_a,include: ['goals'] #, each_serializer: Goals::IndexSerializer
+      render json: command.result.to_a, include: ['goals'] #, each_serializer: Goals::IndexSerializer
     else
       render json: { error: command.errors }, status: :unprocessable_entity
     end
@@ -28,7 +28,7 @@ class GoalsController < ApplicationController
     @goal_service = GoalService.new(params[:user_id], params[:goal_id], 'create', goal_params)
     command = @goal_service.call
     if command.success?
-      render json: command.result
+      render json: command.result, include: ['goal']
     else
       render json: { error: command.errors }, status: :unprocessable_entity
     end
@@ -50,7 +50,7 @@ class GoalsController < ApplicationController
     @goal_service = GoalService.new(params[:user_id], params[:goal_id], 'destroy', nil)
     command = @goal_service.call
     if command.success?
-      render json: command.result
+      render json: ''
     else
       render json: { error: command.errors }, status: :unprocessable_entity
     end
