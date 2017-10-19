@@ -24,7 +24,7 @@ class GoalService
         goals_notifications
       else
         goals
-      end
+    end
   end
 
   private

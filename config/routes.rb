@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  resources :comments
+  resources :comments do
+    collection do
+      get :all_comments
+    end
+  end
   resources :goals
   resources :users do
     member do

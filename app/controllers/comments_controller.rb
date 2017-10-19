@@ -1,54 +1,42 @@
 class CommentsController < ApplicationController
-  before_action :set_comment, only: [:show, :update, :destroy]
+  before_action :set_comment_service
 
   # GET /comments
   def index
-    goal = Goal.find_by_id params[:goal_id]
-    if goal
-      render json: goal.comments, include: ['comments']
+    result = @comment_service.index(params[:goal_id])
+    if result[:success]
+      render json: result[:data], include: ['comments']
     else
-      render json: "Unable to fetch goal comments", status: :unprocessable_entity
+      render json: { error: result[:error] }, status: :unprocessable_entity
     end
-  end
-
-  # GET /comments/1
-  def show
-    render json: @comment
   end
 
   # POST /comments
   def create
-    @comment = Comment.new(comment_params)
-
-    if @comment.save
-      render json: @comment, status: :created, location: @comment
+    result = @comment_service.create(comment_params)
+    if result[:success]
+      render json: result[:data], include: ['comment']
     else
-      render json: @comment.errors, status: :unprocessable_entity
+      render json: { error: result[:error] }, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /comments/1
-  def update
-    if @comment.update(comment_params)
-      render json: @comment
-    else
-      render json: @comment.errors, status: :unprocessable_entity
-    end
-  end
-
-  # DELETE /comments/1
-  def destroy
-    @comment.destroy
+  def all_comments
+    render json: Comment.all, include: ['comments']
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_comment
-      @comment = Comment.find(params[:id])
+    def set_comment_service
+      @comment_service = CommentService.new
     end
 
     # Only allow a trusted parameter "white list" through.
     def comment_params
-      params.require(:comment).permit(:text, :goal_id)
+      if params[:comment].present?
+        params.require(:comment).permit(:text, :goal_id, :user_id)
+      else
+        nil
+      end
     end
 end
