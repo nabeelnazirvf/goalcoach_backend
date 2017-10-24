@@ -3,7 +3,7 @@ class CommentSerializer < ActiveModel::Serializer
   belongs_to :goal
 
   def user
-    user = object.goal.user
+    user = object.user
   end
 
   def created_at

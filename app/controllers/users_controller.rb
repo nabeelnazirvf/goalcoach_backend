@@ -1,4 +1,10 @@
 class UsersController < ApplicationController
+  before_action :set_user_service
+
+  def index
+    result = @user_service.search(params[:search])
+    render json: result[:data], include: ['users']
+  end
 
   # USER SIGNUP!
   def create
@@ -21,7 +27,7 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = User.find_by_email(params[:email])
+    @user = User.find_by_email(params[:email]) || User.find_by_id(params[:id])
     if @user
       render json: @user, include: ['user']#, serializer: Users::ShowSerializer
     else
@@ -46,6 +52,10 @@ class UsersController < ApplicationController
   # Only allow a trusted parameter "white list" through.
   def user_params
     params.require(:user).permit(:name, :email, :password, :password_confirmation, :image_base)
+  end
+
+  def set_user_service
+    @user_service = UserService.new
   end
 
 
