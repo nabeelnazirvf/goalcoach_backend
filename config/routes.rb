@@ -9,6 +9,9 @@ Rails.application.routes.draw do
     member do
       get :user_activity
     end
+    collection do
+      post :follow_unfollow
+    end
   end
   resources :items
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

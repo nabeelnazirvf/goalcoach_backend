@@ -39,7 +39,14 @@ class GoalService
   end
 
   def goals
-    return user.goals.order(created_at: :desc) if user
+    desired_user = user
+    if desired_user
+      multual_goals = []
+      user_ids = desired_user.following.pluck(:id)
+      user_ids.push(desired_user.id)
+      multual_goals = Goal.where(user_id: user_ids).order(created_at: :desc)
+      return multual_goals
+    end
     errors.add :user, 'User Not Found!'
     nil
   end

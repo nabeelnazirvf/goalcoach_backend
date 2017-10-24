@@ -29,9 +29,18 @@ class UsersController < ApplicationController
   def show
     @user = User.find_by_email(params[:email]) || User.find_by_id(params[:id])
     if @user
-      render json: @user, include: ['user']#, serializer: Users::ShowSerializer
+      render json: @user, current_user: @current_user, include: ['user']
     else
       render json: 'SOMETHING WENT WRONG!', status: :unprocessable_entity
+    end
+  end
+
+  def follow_unfollow
+    result = @user_service.follow_unfollow(params[:user_id], @current_user)
+    if result[:success]
+      render json: :ok
+    else
+      render json: result[:error], status: :unprocessable_entity
     end
   end
 
