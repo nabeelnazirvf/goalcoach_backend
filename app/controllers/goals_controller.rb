@@ -1,12 +1,11 @@
 class GoalsController < ApplicationController
-  #before_action :set_service_object, only: [:index, :show, :update, :destroy, :create, :goals_notifications]
 
   # GET /goals
   def index
-    @goal_service = GoalService.new(params[:user_id], params[:goal_id], 'index', nil)
+    @goal_service = GoalService.new(goal_params,'index')
     command = @goal_service.call
     if command.success?
-      render json: command.result.to_a, include: ['goals'] #, each_serializer: Goals::IndexSerializer
+      render json: command.result.to_a, include: ['goals']
     else
       render json: { error: command.errors }, status: :unprocessable_entity
     end
@@ -14,7 +13,7 @@ class GoalsController < ApplicationController
 
   # GET /goals/1
   def show
-    @goal_service = GoalService.new(params[:user_id], params[:goal_id], 'show', nil)
+    @goal_service = GoalService.new(goal_params, 'show')
     command = @goal_service.call
     if command.success?
       render json: command.result
@@ -25,7 +24,7 @@ class GoalsController < ApplicationController
 
   # POST /goals
   def create
-    @goal_service = GoalService.new(params[:user_id], params[:goal_id], 'create', goal_params)
+    @goal_service = GoalService.new(goal_params, 'create')
     command = @goal_service.call
     if command.success?
       render json: command.result, include: ['goal']
@@ -36,7 +35,7 @@ class GoalsController < ApplicationController
 
   # PATCH/PUT /goals/1
   def update
-    @goal_service = GoalService.new(params[:user_id], params[:goal_id], 'update', goal_params)
+    @goal_service = GoalService.new(goal_params, 'update')
     command = @goal_service.call
     if command.success?
       render json: command.result
@@ -47,7 +46,7 @@ class GoalsController < ApplicationController
 
   # DELETE /goals/1
   def destroy
-    @goal_service = GoalService.new(params[:user_id], params[:goal_id], 'destroy', nil)
+    @goal_service = GoalService.new(goal_params, 'destroy')
     command = @goal_service.call
     if command.success?
       render json: ''
@@ -57,7 +56,7 @@ class GoalsController < ApplicationController
   end
 
   def goals_notifications
-    @goal_service = GoalService.new(params[:user_id], params[:goal_id], 'goals_notifications', nil)
+    @goal_service = GoalService.new(goal_params, 'goals_notifications')
     command = @goal_service.call
     if command.success?
       render json: command.result
@@ -67,15 +66,8 @@ class GoalsController < ApplicationController
   end
 
   private
-  # def set_service_object
-  #   @goal_service = GoalService.new(params[:user_id], params[:goal_id], nil, nil)
-  # end
-
-  # Only allow a trusted parameter "white list" through.
   def goal_params
-    params.require(:goal).permit(:title, :email, :user_id)
+    params.require(:goal).permit(:title, :email, :user_id, :goal_id)
   end
-
-
 
 end

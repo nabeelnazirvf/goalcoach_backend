@@ -1,11 +1,11 @@
 class GoalService
   prepend SimpleCommand
 
-  def initialize(user_id, goal_id, method_type, goal_params)
-    @user_id = user_id
-    @goal_id = goal_id
+  def initialize(desired_params, method_type)
+    @user_id = desired_params[:user_id]
+    @goal_id = desired_params[:goal_id]
     @method_type = method_type
-    @goal_params = goal_params
+    @goal_params = desired_params
   end
 
   def call
@@ -28,8 +28,6 @@ class GoalService
   end
 
   private
-
-  #attr_accessor :user_id, :goal_id
 
   def user
     u = User.find_by_id(@user_id)

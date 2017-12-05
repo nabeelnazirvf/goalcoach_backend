@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   before_action :set_user_service
 
   def index
-    result = @user_service.search(params[:search])
+    result = @user_service.search(user_params[:user][:search])
     render json: result[:data], include: ['users']
   end
 
@@ -18,7 +18,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user = User.find_by_email params[:email]
+    @user = User.find_by_email user_params[:user][:email]
     if @user and @user.update(user_params)
       render json: @user
     else
@@ -27,7 +27,7 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = User.find_by_email(params[:email]) || User.find_by_id(params[:id])
+    @user = User.find_by_email(user_params[:user][:email]) || User.find_by_id(user_params[:user][:id])
     if @user
       render json: @user, current_user: @current_user, include: ['user']
     else
@@ -36,7 +36,7 @@ class UsersController < ApplicationController
   end
 
   def follow_unfollow
-    result = @user_service.follow_unfollow(params[:user_id], @current_user)
+    result = @user_service.follow_unfollow(user_params[:user][:user_id], @current_user)
     if result[:success]
       render json: :ok
     else
@@ -45,13 +45,10 @@ class UsersController < ApplicationController
   end
 
   def user_activity
-    user = User.find_by_id(params[:id])
-    #user_activity = User.where(id: user.id).includes(:goals, :comments).order(created_at: :desc).to_a
+    user = User.find_by_id(user_params[:user][:id])
     goals = Goal.includes(:user, :comments)
-    # from_time = Time.now
-    # render json: {user: user, date: ActionView::Base.new.distance_of_time_in_words(from_time, Goal.last.created_at.to_time + (1440*100).minutes)}
     if user
-      render json: user, root: "user", include: ['user', 'goals', 'goals.comments']#, serializer: Users::ShowSerializer
+      render json: user, root: "user", include: ['user', 'goals', 'goals.comments']
     else
       render json: 'SOMETHING WENT WRONG IN FETCHING USER ACTIVITY!', status: :unprocessable_entity
     end
@@ -60,7 +57,7 @@ class UsersController < ApplicationController
   private
   # Only allow a trusted parameter "white list" through.
   def user_params
-    params.require(:user).permit(:name, :email, :password, :password_confirmation, :image_base)
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :image_base, :search, :user_id)
   end
 
   def set_user_service

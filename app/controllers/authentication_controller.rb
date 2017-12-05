@@ -1,5 +1,4 @@
 class AuthenticationController < ApplicationController
-  #prepend SimpleCommand
   skip_before_action :authenticate_request
 
   def authenticate

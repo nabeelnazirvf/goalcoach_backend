@@ -3,7 +3,7 @@ class CommentsController < ApplicationController
 
   # GET /comments
   def index
-    result = @comment_service.index(params[:goal_id])
+    result = @comment_service.index(comment_params[:goal_id])
     if result[:success]
       render json: result[:data], include: ['comments']
     else
